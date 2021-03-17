@@ -1,24 +1,24 @@
 const {Telegraf, Markup, Extra} = require('telegraf')
-
+import {BotQuires} from "../utilites/botQuires";
 
 const bot = new Telegraf(process.env.BOT_API);
 
 export function initialStart() {
-    bot.start((fn: any) => fn.reply('Welcome to health care bot how can I help you?'));
+    bot.start((fn: any) => fn.reply(`${BotQuires.welcomingUser.query}`));
     bot.hears('hello', (fn: any) => {
-        fn.replyWithHTML('<b>Hello</b>. <i>How are you today?</i>',
+        fn.replyWithHTML(`${BotQuires.askUserHealth.query}`,
             Markup.keyboard([
-                Markup.button.text('Not bad'),
-                Markup.button.text('All Right')
+                Markup.button.text(`${BotQuires.askUserHealth.firstChoice}`),
+                Markup.button.text(`${BotQuires.askUserHealth.secondChoice}`)
 
             ])
         )
-        bot.action('not bad', (fn: any) => {
+        bot.action(`${BotQuires.askUserHealth.firstChoice}`, (fn: any) => {
             fn.editMessageText('<i>Have a nice day 😊</i>',
             )
         });
 
-        bot.action('all right', (fn: any) => {
+        bot.action(`${BotQuires.askUserHealth.secondChoice}`, (fn: any) => {
             fn.editMessageText('<i>May happiness be with you 🙏</i>',)
         })
     });
