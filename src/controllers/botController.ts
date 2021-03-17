@@ -43,7 +43,14 @@ export function initialStart() {
         )
 
     });
+    // triggered after help
+    bot.hears(BotCommands.ratePhysical.name, async (fn: any) => {
+        fn.replyWithHTML(`<b>opps ${BotCommands.ratePhysical.name}</b> triggered`);
+    });
 
+    bot.hears(BotCommands.rateShipment.name, async (fn: any) => {
+        fn.replyWithHTML(`<b>opps ${BotCommands.rateShipment.name}</b> triggered`);
+    });
     bot.launch();
 
 // Enable graceful stop
