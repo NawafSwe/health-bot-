@@ -6,23 +6,23 @@ const bot = new Telegraf(process.env.BOT_API);
 export function initialStart() {
     bot.start((fn: any) => fn.reply(`${BotQuires.welcomingUser.query}`));
     bot.hears('hello', (fn: any) => {
-        fn.replyWithHTML(`${BotQuires.askUserHealth.query}`,
+        fn.replyWithHTML(BotQuires.askUserHealth.query,
             Markup.keyboard([
                 Markup.button.text(`${BotQuires.askUserHealth.firstChoice}`),
                 Markup.button.text(`${BotQuires.askUserHealth.secondChoice}`)
 
             ])
         )
-        bot.action(`${BotQuires.askUserHealth.firstChoice}`, (fn: any) => {
-            fn.editMessageText('<i>Have a nice day 😊</i>',
-            )
-        });
 
-        bot.action(`${BotQuires.askUserHealth.secondChoice}`, (fn: any) => {
-            fn.editMessageText('<i>May happiness be with you 🙏</i>',)
-        })
+    });
+    bot.action(`${BotQuires.askUserHealth.firstChoice}`, (fn: any) => {
+        fn.reply('<i>Have a nice day 😊</i>',
+        )
     });
 
+    bot.action(`${BotQuires.askUserHealth.secondChoice}`, (fn: any) => {
+        fn.reply('<i>May happiness be with you 🙏</i>',)
+    });
     bot.launch();
 
 // Enable graceful stop
