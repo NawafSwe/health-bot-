@@ -1,0 +1,24 @@
+{
+  "name": "package.json",
+  "version": "1.0.0",
+  "description": "this is a json package to hold all required dependinces for deployment",
+  "main": "src/index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NawafSwe/health-bot-.git"
+  },
+  "keywords": [
+    "health",
+    "chatbot",
+    "checker"
+  ],
+  "author": "Nawaf Alsharqi",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NawafSwe/health-bot-/issues"
+  },
+  "homepage": "https://github.com/NawafSwe/health-bot-#readme"
+}
