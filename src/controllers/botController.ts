@@ -36,7 +36,8 @@ export function initialStart() {
     // init help command
     bot.command('help', async (fn: any) => {
         await fn.replyWithHTML('<b>available commands</b>', Markup.keyboard([
-                [`${BotCommands.ratePhysical.name}`, `${BotCommands.rateShipment.name}`]
+                `${BotCommands.ratePhysical.name}`, `${BotCommands.rateShipment.name}`,
+                `${BotCommands.quit.name}`, `${BotCommands.doHealthCheck}`
             ])
                 .oneTime()
                 .resize()
@@ -51,6 +52,13 @@ export function initialStart() {
     bot.hears(BotCommands.rateShipment.name, async (fn: any) => {
         fn.replyWithHTML(`<b>opps ${BotCommands.rateShipment.name}</b> triggered`);
     });
+
+    bot.hears(BotCommands.doHealthCheck.name, async (fn: any) => {
+        fn.replyWithHTML(`<b>opps ${BotCommands.doHealthCheck.name}</b> triggered`);
+    });
+
+    // quit bot will be triggered when user type /quit
+    quitBot();
     bot.launch();
 
 // Enable graceful stop
@@ -60,7 +68,7 @@ export function initialStart() {
 
 function quitBot() {
     // quitting the bot
-    bot.command('quit', (fn: any) => {
+    bot.command(BotCommands.quit, (fn: any) => {
         // Explicit usage
         fn.telegram.leaveChat(fn.message.chat.id);
 

@@ -18,12 +18,16 @@ enum UsersAnswers {
 
 export const BotCommands = {
     rateShipment: {
-        name: 'rate Shipment', callback: () => {
-        }
+        name: 'rate Shipment'
     },
     ratePhysical: {
-        name: 'rate Physical', callBack: () => {
-        }
-    }
+        name: 'rate Physical'
+    },
+    doHealthCheck: {
+        name: "want to do new check? "
+    },
+    quit: {name: '/quit'},
+    help: {name: '/help'}
+
 
 }
