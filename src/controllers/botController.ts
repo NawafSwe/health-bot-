@@ -26,18 +26,16 @@ export function initialStart() {
     );
 
     bot.hears('hello', (fn: any) => {
-        fn.replyWithHTML(BotQuires.askUserHealth.query, Markup.keyboard([
-                Markup.button.callback(BotQuires.askUserHealth.firstChoice, BotQuires.askUserHealth.firstChoice.toLowerCase()),
-                Markup.button.callback(BotQuires.askUserHealth.secondChoice, BotQuires.askUserHealth.secondChoice.toLowerCase())
-            ])
-        )
+        fn.replyWithHTML(`${BotQuires.welcomingUser.query}`);
+        fn.replyWithHTML(BotQuires.instructions);
+
     });
-    initQuires();
+
     // init help command
     bot.command('help', async (fn: any) => {
         await fn.replyWithHTML('<b>available commands</b>', Markup.keyboard([
-                `${BotCommands.ratePhysical.name}`, `${BotCommands.rateShipment.name}`,
-                `${BotCommands.quit.name}`, `${BotCommands.doHealthCheck}`
+                [`${BotCommands.ratePhysical.name}`, `${BotCommands.rateShipment.name}`],
+                [`${BotCommands.quit.name}`, `${BotCommands.doHealthCheck.name}`]
             ])
                 .oneTime()
                 .resize()
@@ -54,7 +52,10 @@ export function initialStart() {
     });
 
     bot.hears(BotCommands.doHealthCheck.name, async (fn: any) => {
-        fn.replyWithHTML(`<b>opps ${BotCommands.doHealthCheck.name}</b> triggered`);
+        fn.replyWithHTML(`<i>let us do fast check for the product 👍🏻</i>`);
+        fn.replyWithHTML(`<i>please rate the physical status from 1 to 5 </i>`, Markup.keyboard([
+            '1', '2', '3', '4', '5'
+        ]));
     });
 
     // quit bot will be triggered when user type /quit

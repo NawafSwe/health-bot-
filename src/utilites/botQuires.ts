@@ -24,7 +24,7 @@ export const BotCommands = {
         name: 'rate Physical'
     },
     doHealthCheck: {
-        name: "want to do new check? "
+        name: "want to do new check?"
     },
     quit: {name: '/quit'},
     help: {name: '/help'}
