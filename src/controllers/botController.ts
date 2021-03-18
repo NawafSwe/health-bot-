@@ -229,7 +229,7 @@ function askForLocation(fn: any) {
  * @async
  * @function
  * @namespace getDataFromSession
- * * @param fn fn telegram context
+ * @param fn fn telegram context
  * @description getting stored data from session and send it to user
  */
 async function getDataFromSession(fn: any) {

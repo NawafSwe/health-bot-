@@ -1,8 +1,14 @@
 "use strict";
+/**
+ * @module src/utilities/botQuires.ts
+ * this module holds bot quires variables
+ */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.mappingBotCommands = exports.BotCommands = exports.AnswersQuires = exports.BotQuires = void 0;
 /**
- *
+ *@namespace BotQuires
+ * @description bot queries contains all required sentences for the bot , using this approach to avoid typos and to much typing
+ * while developing the logic in the controller.
  */
 exports.BotQuires = {
     welcomingUser: {
@@ -18,7 +24,8 @@ exports.BotQuires = {
     },
 };
 /**
- *
+ * @namespace AnswersQuires
+ * @description contains all answer quires to user it as actions in the app
  */
 exports.AnswersQuires = {
     ratingQuality: {
@@ -30,6 +37,10 @@ exports.AnswersQuires = {
         five: { num: '5', id: '5s' },
     }
 };
+/**
+ * @namespace BotCommands
+ * @description contains all required bot commands associated with the bot.
+ */
 exports.BotCommands = {
     rateShipment: { name: 'How was the quality of tracking the shipment' },
     ratePhysical: { name: 'rate Physical' },
@@ -40,7 +51,9 @@ exports.BotCommands = {
     help: { name: '/help' },
 };
 /**
- *
+ * @function
+ * @namespace mappingBotCommands
+ * @description function that maps the name of the commands for a bot maybe used for future development
  */
 function mappingBotCommands() {
     let commandList = [];

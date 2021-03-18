@@ -1,4 +1,11 @@
 "use strict";
+/**
+ * @module src/controllers/botController.ts
+ * this module requires the following packages:
+ * @requires Telegraf,Markup,Extra,TelegrafContext
+ * @requires NextFunction
+ * @requires TelegrafQuestion
+ */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -13,10 +20,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.initialStart = void 0;
+// importing dependencies
 const { Telegraf, Markup, Extra, TelegrafContext } = require('telegraf');
 const telegraf_question_1 = __importDefault(require("telegraf-question"));
-const LocalSession = require('telegraf-session-local');
 const botQuires_1 = require("../utilites/botQuires");
+const LocalSession = require('telegraf-session-local');
+// creating bot
 const bot = new Telegraf(process.env.TOKEN);
 // config bot
 // using session
@@ -25,22 +34,38 @@ bot.use((new LocalSession({ database: 'health_db.json' })).middleware());
 bot.use(telegraf_question_1.default({
     cancelTimeout: 300000 // 5 min
 }));
+/**
+ * @function
+ * @namespace initialStart
+ * @description function that init the start of bot and lunch it to work
+ */
 function initialStart() {
-    bot.start((fn) => {
+    // starting with wlecoming message
+    bot.use((fn) => {
         fn.replyWithHTML(`${botQuires_1.BotQuires.welcomingUser.query}`);
         fn.replyWithHTML(botQuires_1.BotQuires.instructions);
     });
-    // init help command
+    // init help command that contains sub actions
     bot.command('help', (fn) => __awaiter(this, void 0, void 0, function* () {
         yield fn.replyWithHTML('<b>available commands</b>', Markup.inlineKeyboard([
             Markup.button.callback(`${botQuires_1.BotCommands.doHealthCheck.name}`, `do_check`),
-            Markup.button.callback(`view session`, `session`)
+            Markup.button.callback(`view session`, `session`),
+            Markup.button.callback(`clear session`, `clear`)
         ])
             .oneTime()
             .resize());
     }));
     // triggered after help
-    // starting check process
+    // session actions
+    // getting session data
+    bot.action('session', (fn) => __awaiter(this, void 0, void 0, function* () {
+        yield getDataFromSession(fn);
+    }));
+    // removing session data
+    bot.action(`clear`, (fn) => __awaiter(this, void 0, void 0, function* () {
+        yield clearSession(fn);
+    }));
+    // starting check process with asking the question about the product
     bot.action('do_check', (fn, next) => __awaiter(this, void 0, void 0, function* () {
         yield fn.replyWithHTML(`<b>Rate quality of tracking the shipment from 0 to 5</b>`, Markup.inlineKeyboard([
             [
@@ -55,7 +80,7 @@ function initialStart() {
         ]));
     }));
     // action for user interaction after choosing rating
-    // if he choose 0
+    // if he choose 0 or 1 or ... ect to 5
     bot.action(botQuires_1.AnswersQuires.ratingQuality.zero.num, (fn, next) => __awaiter(this, void 0, void 0, function* () {
         fn.session.ratedQuality = botQuires_1.AnswersQuires.ratingQuality.zero.num;
         checkPhysicalStatus(fn);
@@ -68,28 +93,29 @@ function initialStart() {
     }));
     bot.action(botQuires_1.AnswersQuires.ratingQuality.two.num, (fn, next) => __awaiter(this, void 0, void 0, function* () {
         fn.session.ratedQuality = botQuires_1.AnswersQuires.ratingQuality.two.num;
-        checkPhysicalStatus(fn);
+        yield checkPhysicalStatus(fn);
         return next();
     }));
     bot.action(botQuires_1.AnswersQuires.ratingQuality.three.num, (fn, next) => __awaiter(this, void 0, void 0, function* () {
         fn.session.ratedQuality = botQuires_1.AnswersQuires.ratingQuality.three.num;
-        checkPhysicalStatus(fn);
+        yield checkPhysicalStatus(fn);
         return next();
     }));
     bot.action(botQuires_1.AnswersQuires.ratingQuality.four.num, (fn, next) => __awaiter(this, void 0, void 0, function* () {
         fn.session.ratedQuality = botQuires_1.AnswersQuires.ratingQuality.four.num;
-        checkPhysicalStatus(fn);
+        yield checkPhysicalStatus(fn);
         return next();
     }));
     bot.action(botQuires_1.AnswersQuires.ratingQuality.five.num, (fn, next) => __awaiter(this, void 0, void 0, function* () {
         fn.session.ratedQuality = botQuires_1.AnswersQuires.ratingQuality.five.num;
-        checkPhysicalStatus(fn);
+        yield checkPhysicalStatus(fn);
         return next();
     }));
+    // if user had some problems with the physical status of the product or not
     bot.action('bad', (fn, next) => __awaiter(this, void 0, void 0, function* () {
         fn.session.physicalQuality = `bad`;
         // next
-        askForLocation(fn);
+        yield askForLocation(fn);
         return next();
     }));
     bot.action('good', (fn, next) => __awaiter(this, void 0, void 0, function* () {
@@ -98,6 +124,7 @@ function initialStart() {
         yield askForLocation(fn);
         return next();
     }));
+    // if user had bad experience with the delivery location or not
     bot.action('yes', (fn, next) => __awaiter(this, void 0, void 0, function* () {
         fn.session.locationDelivery = `Yes`;
         return next();
@@ -106,10 +133,11 @@ function initialStart() {
         fn.session.locationDelivery = `No`;
         return next();
     }));
+    // if user want to cancel and quit
     bot.action(`cancel`, (_) => {
         quitBot();
     });
-    // on receiving location or photo
+    // on receiving location or photo from user regarding product photo or deliveryLocation
     bot.on([`photo`, `location`], (fn) => {
         if (fn.message.photo) {
             fn.session.productPhoto = fn.message.photo;
@@ -118,30 +146,27 @@ function initialStart() {
             fn.session.location = fn.message.location;
         }
     });
-    // for fetching price
+    // for fetching price when user type any number for the prouct price
     bot.on(`text`, (fn) => {
         if (fn.message.text) {
-            const price = parseFloat(fn.message.text);
-            fn.session.price = price;
+            fn.session.price = parseFloat(fn.message.text);
         }
     });
-    // commands
-    bot.action('session', (fn) => __awaiter(this, void 0, void 0, function* () {
-        console.log(`hi from action`);
-        yield getDataFromSession(fn);
-    }));
-    bot.command(`clear`, (fn) => __awaiter(this, void 0, void 0, function* () {
-        yield clearSession(fn);
-    }));
     // quit bot will be triggered when user type /quit
     quitBot();
+    // lunching bot
     bot.launch();
     // Enable graceful stop
     process.once('SIGINT', () => bot.stop('SIGINT'));
     process.once('SIGTERM', () => bot.stop('SIGTERM'));
 }
 exports.initialStart = initialStart;
-// helper functions
+/* ----------------------Helper Functions ----------------------*/
+/**
+ * @function
+ * @namespace quitBot
+ * @description quit the bot and leave the chat
+ */
 function quitBot() {
     // quitting the bot
     bot.command(botQuires_1.BotCommands.quit, (fn) => {
@@ -153,22 +178,33 @@ function quitBot() {
     });
 }
 /**
- *
+ * @function
+ * @namespace checkPhysicalStatus
  * @param fn telegram context
+ * @description asking user about the physical status of the product
  */
 function checkPhysicalStatus(fn) {
     fn.replyWithHTML(`<b>How was the physical status of the product? before answering You can send photo of the current product 📷, and you can provide price </b>`, Markup.inlineKeyboard([Markup.button.callback(`Good`, `good`), Markup.button.callback(`Bad`, 'bad')]));
     // proceeding  to location
 }
 /**
- *
- * @param fn telegram context
+ * @function
+ * @namespace askForLocation
+ *  * @param fn telegram context
+ * @description asking user about the location
  */
 function askForLocation(fn) {
     fn.replyWithHTML(`<b>are you satisfied delivery location? you can provide the location of the delivery before answering 🧭</b>`, Markup.inlineKeyboard([
         Markup.button.callback(`Yes`, `yes`), Markup.button.callback(`No`, `no`)
     ]));
 }
+/**
+ * @async
+ * @function
+ * @namespace getDataFromSession
+ * @param fn fn telegram context
+ * @description getting stored data from session and send it to user
+ */
 function getDataFromSession(fn) {
     return __awaiter(this, void 0, void 0, function* () {
         // let price = fn.session.price;
@@ -176,13 +212,15 @@ function getDataFromSession(fn) {
         // let location = fn.session.location;
         // let physicalQuality = fn.session.physicalQuality;
         // let deliverySatisfaction = fn.session.locationDelivery;
-        console.log(`hi`);
         yield fn.replyWithMarkdown(`data from your session: \`${JSON.stringify(fn.session)}\``);
     });
 }
 /**
- *
+ * @async
+ * @function
+ * @namespace clearSession
  * @param fn telegram context
+ * @description clear all the data stored in the session
  */
 function clearSession(fn) {
     return __awaiter(this, void 0, void 0, function* () {

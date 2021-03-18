@@ -1,4 +1,14 @@
 "use strict";
+/**
+ * @module src/index.ts
+ * this module requires the following packages:
+ * @requires express
+ * @requires Request,Response,Application
+ * @requires bodyParser
+ * @requires cors
+ * @requires helmet
+ *
+ */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -16,6 +26,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express = require('express');
 const body_parser_1 = __importDefault(require("body-parser"));
 const cors = require("cors");
+// increasing server security
 const helmet = require("helmet");
 const { PORT, HOST } = require("./config");
 const botController_1 = require("./controllers/botController");
@@ -25,6 +36,8 @@ app.use(express.json());
 app.use(body_parser_1.default.json());
 app.use(cors());
 app.use(helmet());
+// docs refers to the project documentation.
+app.use(express.static("docs"));
 /* ------------ Testing Backend ------------ */
 /**
  * Route getting doc page of this project.
@@ -36,7 +49,8 @@ app.use(helmet());
  * @param {callback} middleware - Express middleware.
  */
 app.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    res.send('Backend health is good').status(200);
+    // rendering the docs page
+    res.render(`docs`);
 }));
 /* ------------ Start listening ------------ */
 app.listen(PORT, HOST, () => {
