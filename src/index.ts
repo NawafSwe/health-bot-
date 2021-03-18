@@ -4,10 +4,11 @@ import {Request, Response, Application} from 'express';
 import bodyParser from "body-parser";
 import cors = require('cors');
 import helmet = require('helmet');
-import {initialStart} from "./controllers/botController";
 
 const {PORT, HOST} = require("./config");
+import {initialStart} from "./controllers/botController";
 /* ------------ App Config ------------ */
+
 const app: Application = express();
 app.use(express.json());
 app.use(bodyParser.json());

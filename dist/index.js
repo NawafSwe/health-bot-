@@ -17,15 +17,14 @@ const express = require('express');
 const body_parser_1 = __importDefault(require("body-parser"));
 const cors = require("cors");
 const helmet = require("helmet");
-//import morgan from "morgan";
 const { PORT, HOST } = require("./config");
+const botController_1 = require("./controllers/botController");
 /* ------------ App Config ------------ */
 const app = express();
 app.use(express.json());
 app.use(body_parser_1.default.json());
 app.use(cors());
 app.use(helmet());
-//app.use(morgan(`tiny`));
 /* ------------ Testing Backend ------------ */
 /**
  * Route getting doc page of this project.
@@ -39,9 +38,8 @@ app.use(helmet());
 app.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.send('Backend health is good').status(200);
 }));
-/* ------------ Using Routes ------------ */
-const botRouter_1 = require("./routes/botRouter");
-app.use('/bot', botRouter_1.router);
 /* ------------ Start listening ------------ */
-app.listen(PORT);
-console.log(`server running on  http://${HOST}:${PORT}`);
+app.listen(PORT, HOST, () => {
+    botController_1.initialStart();
+    console.log(`server running on  http://${HOST}:${PORT}`);
+});

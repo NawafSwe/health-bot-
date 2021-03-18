@@ -96,13 +96,11 @@ function initialStart() {
         return next();
     }));
     bot.action('yes', (fn, next) => __awaiter(this, void 0, void 0, function* () {
-        fn.session.locationDelivry = `Yes`;
-        yield getPrice(fn, next);
+        fn.session.locationDelivery = `Yes`;
         return next();
     }));
     bot.action('no', (fn, next) => __awaiter(this, void 0, void 0, function* () {
-        fn.session.locationDelivry = `No`;
-        yield getPrice(fn, next);
+        fn.session.locationDelivery = `No`;
         return next();
     }));
     bot.action(`cancel`, (_) => {
@@ -117,9 +115,16 @@ function initialStart() {
             fn.session.location = fn.message.location;
         }
     });
+    // for fetching price
+    bot.on(`text`, (fn) => {
+        if (fn.message.text) {
+            const price = parseFloat(fn.message.text);
+            fn.session.price = price;
+        }
+    });
     // commands
     bot.command('/stat', (fn) => {
-        fn.replyWithHTML(`database has ${fn.session.ratedQuality}`);
+        fn.replyWithHTML(`<b>your session has the following data</b> ${fn.session.ratedQuality}`);
     });
     // quit bot will be triggered when user type /quit
     quitBot();
@@ -141,21 +146,11 @@ function quitBot() {
     });
 }
 function checkPhysicalStatus(fn) {
-    fn.replyWithHTML(`<b>How was the physical status of the product? before answering You can send photo of the current product 📷 </b>`, Markup.inlineKeyboard([Markup.button.callback(`Good`, `good`), Markup.button.callback(`Bad`, 'bad')]));
+    fn.replyWithHTML(`<b>How was the physical status of the product? before answering You can send photo of the current product 📷, and you can provide price </b>`, Markup.inlineKeyboard([Markup.button.callback(`Good`, `good`), Markup.button.callback(`Bad`, 'bad')]));
     // proceeding  to location
 }
 function askForLocation(fn) {
     fn.replyWithHTML(`<b>are you satisfied delivery location? you can provide the location of the delivery before answering 🧭</b>`, Markup.inlineKeyboard([
         Markup.button.callback(`Yes`, `yes`), Markup.button.callback(`No`, `no`)
     ]));
-}
-function getPrice(fn, next) {
-    return __awaiter(this, void 0, void 0, function* () {
-        fn.answerCbQuery();
-        let price = yield fn.ask({ text: `<b>what is the price of the product ?</b>`, parse_mode: 'HTML' });
-        if (price != null) {
-            fn.session.price = price;
-        }
-        return next();
-    });
 }

@@ -128,6 +128,8 @@ export function initialStart() {
         }
 
     });
+
+    // for fetching price
     bot.on(`text`, (fn: any) => {
         if (fn.message.text) {
             const price = parseFloat(fn.message.text);
@@ -137,7 +139,8 @@ export function initialStart() {
 
     // commands
     bot.command('/stat', (fn: any) => {
-        fn.replyWithHTML(`database has ${fn.session.ratedQuality}`)
+        fn.replyWithHTML(`<b>your session has the following data</b> ${fn.session.ratedQuality}`);
+
     });
 
     // quit bot will be triggered when user type /quit
