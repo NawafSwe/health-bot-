@@ -98,13 +98,13 @@ function initialStart() {
     bot.action('yes', (fn) => {
         if (fn.message.text == `yes`) {
             console.log(`get yes`);
-            fn.session.locationDelivry = fn.message.text;
+            fn.session.locationDelivry = `Yes`;
         }
     });
     bot.action('no', (fn) => {
         if (fn.message.text == `no`) {
             console.log(`get no`);
-            fn.session.locationDelivry = fn.message.text;
+            fn.session.locationDelivry = `No`;
         }
     });
     // else if (fn.message.text == `no`) {

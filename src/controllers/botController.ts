@@ -104,20 +104,11 @@ export function initialStart() {
     });
 
     bot.action('yes', (fn: any) => {
-        if (fn.message.text == `yes`) {
-            console.log(`get yes`);
-            fn.session.locationDelivry = `Yes`;
-        }
-
-
+        fn.session.locationDelivry = `Yes`;
     });
 
     bot.action('no', (fn: any) => {
-        if (fn.message.text == `no`) {
-            console.log(`get no`);
-            fn.session.locationDelivry = `No`;
-        }
-
+        fn.session.locationDelivry = `No`;
 
     });
 
