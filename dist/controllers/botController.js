@@ -60,7 +60,7 @@ function initialStart() {
     }));
     bot.action(botQuires_1.AnswersQuires.ratingQuality.one.num, (fn, next) => __awaiter(this, void 0, void 0, function* () {
         fn.session.ratedQuality = botQuires_1.AnswersQuires.ratingQuality.one.num;
-        checkPhysicalStatus(fn);
+        yield checkPhysicalStatus(fn);
         return next();
     }));
     bot.action(botQuires_1.AnswersQuires.ratingQuality.two.num, (fn, next) => __awaiter(this, void 0, void 0, function* () {
@@ -99,6 +99,13 @@ function initialStart() {
     bot.action(`cancel`, (_) => {
         quitBot();
     });
+    bot.on(`photo`, (fn) => {
+        if (fn.message.photo) {
+            console.log(`there is a photo`);
+            fn.session.productPhoto = fn.message.photo;
+            fn.sendPhoto(fn.message.photo);
+        }
+    });
     // quit bot will be triggered when user type /quit
     quitBot();
     bot.launch();
@@ -112,10 +119,12 @@ function quitBot() {
     bot.command(botQuires_1.BotCommands.quit, (fn) => {
         // Explicit usage
         fn.telegram.leaveChat(fn.message.chat.id);
+        fn.replyWithHTML(`<b>bye bye 👋🏻</b>`);
         // Using context shortcut
         fn.leaveChat();
     });
 }
 function checkPhysicalStatus(fn) {
     fn.replyWithHTML(`<b>How was the physical status of the product? </b>`, Markup.inlineKeyboard([Markup.button.callback(`Good`, `good`), Markup.button.callback(`Bad`, 'bad')]));
+    fn.replyWithHTML(`<b> You can send photo of the current product</b>`);
 }

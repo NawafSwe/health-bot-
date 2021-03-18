@@ -59,7 +59,7 @@ export function initialStart() {
 
     bot.action(AnswersQuires.ratingQuality.one.num, async (fn: any, next: NextFunction) => {
         fn.session.ratedQuality = AnswersQuires.ratingQuality.one.num;
-        checkPhysicalStatus(fn);
+        await checkPhysicalStatus(fn);
         return next();
     });
 
@@ -111,7 +111,7 @@ export function initialStart() {
         if (fn.message.photo) {
             console.log(`there is a photo`);
             fn.session.productPhoto = fn.message.photo;
-            fn.sendPhoto(fn.message.photo);
+            fn.replyWithPhoto(fn.session.productPhoto);
         }
 
     });
@@ -139,9 +139,9 @@ function quitBot() {
 }
 
 function checkPhysicalStatus(fn: any) {
-    fn.replyWithHTML(`<b>How was the physical status of the product? </b>`, Markup.inlineKeyboard([
-            [Markup.button.callback(`Good`, `good`), Markup.button.callback(`Bad`, 'bad')]
-                [Markup.button.text(`you can provide images 👍🏻`)]
-        ]
+    fn.replyWithHTML(`<b>How was the physical status of the product? </b>`, Markup.inlineKeyboard(
+        [Markup.button.callback(`Good`, `good`), Markup.button.callback(`Bad`, 'bad')]
     ));
+
+    fn.replyWithHTML(`<b> You can send photo of the current product</b>`);
 }
