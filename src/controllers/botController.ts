@@ -104,17 +104,13 @@ export function initialStart() {
     });
 
     bot.action('yes', async (fn: any, next: NextFunction) => {
-        fn.session.locationDelivry = `Yes`;
-        await getPrice(fn, next);
+        fn.session.locationDelivery = `Yes`;
         return next();
-
     });
 
     bot.action('no', async (fn: any, next: NextFunction) => {
-        fn.session.locationDelivry = `No`;
-        await getPrice(fn, next);
+        fn.session.locationDelivery = `No`;
         return next();
-
     });
 
     bot.action(`cancel`, (_: any) => {
@@ -131,6 +127,12 @@ export function initialStart() {
             fn.session.location = fn.message.location;
         }
 
+    });
+    bot.on(`text`, (fn: any) => {
+        if (fn.message.text) {
+            const price = parseFloat(fn.message.text);
+            fn.session.price = price;
+        }
     });
 
     // commands
@@ -163,7 +165,7 @@ function quitBot() {
 }
 
 function checkPhysicalStatus(fn: any) {
-    fn.replyWithHTML(`<b>How was the physical status of the product? before answering You can send photo of the current product 📷 </b>`, Markup.inlineKeyboard(
+    fn.replyWithHTML(`<b>How was the physical status of the product? before answering You can send photo of the current product 📷, and you can provide price </b>`, Markup.inlineKeyboard(
         [Markup.button.callback(`Good`, `good`), Markup.button.callback(`Bad`, 'bad')]
     ));
     // proceeding  to location
@@ -175,14 +177,4 @@ function askForLocation(fn: any) {
     fn.replyWithHTML(`<b>are you satisfied delivery location? you can provide the location of the delivery before answering 🧭</b>`, Markup.inlineKeyboard([
         Markup.button.callback(`Yes`, `yes`), Markup.button.callback(`No`, `no`)
     ]));
-}
-
-async function getPrice(fn: any, next: NextFunction) {
-    fn.answerCbQuery();
-    let price = await fn.ask({text: `<b>what is the price of the product ?</b>`, parse_mode: 'HTML'});
-    if (price != null) {
-        fn.session.price = price;
-    }
-    return next();
-
 }
