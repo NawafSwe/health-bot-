@@ -32,42 +32,73 @@ function initialStart() {
     });
     // init help command
     bot.command('help', (fn) => __awaiter(this, void 0, void 0, function* () {
-        yield fn.replyWithHTML('<b>available commands</b>', Markup.inlineKeyboard([Markup.button.callback(`${botQuires_1.BotCommands.doHealthCheck.name}`, `do_check`),
-            Markup.button.callback('1', '1'),
-        ])
+        yield fn.replyWithHTML('<b>available commands</b>', Markup.inlineKeyboard([Markup.button.callback(`${botQuires_1.BotCommands.doHealthCheck.name}`, `do_check`),])
             .oneTime()
             .resize());
     }));
     // triggered after help
     // starting check process
-    bot.action(`1`, (fn) => __awaiter(this, void 0, void 0, function* () {
-        yield fn.answerCbQuery();
-        let rate = yield fn.ask({
-            text: `what it is your rating`,
-            extra: {
-                reply_markup: Markup.inlineKeyboard(['0'])
-            }
-        }, null, `rate`, (fn) => {
-            var _a;
-            let rate = parseInt((_a = fn.message) === null || _a === void 0 ? void 0 : _a.text);
-            console.log(rate);
-            return rate;
-        });
-        if (rate !== null) {
-            console.log(rate);
-        }
-    }));
     bot.action('do_check', (fn, next) => __awaiter(this, void 0, void 0, function* () {
-        fn.replyWithHTML(`<b>Rate quality of tracking the shipment from 0 to 5</b>`, Markup.inlineKeyboard([
+        yield fn.replyWithHTML(`<b>Rate quality of tracking the shipment from 0 to 5</b>`, Markup.inlineKeyboard([
             [
-                Markup.button.callback(botQuires_1.AnswersQuires.ratingQuality.zero.num, botQuires_1.AnswersQuires.ratingQuality.zero.num)
+                Markup.button.callback(botQuires_1.AnswersQuires.ratingQuality.zero.num, botQuires_1.AnswersQuires.ratingQuality.zero.num),
+                Markup.button.callback(botQuires_1.AnswersQuires.ratingQuality.one.num, botQuires_1.AnswersQuires.ratingQuality.one.num),
+                Markup.button.callback(botQuires_1.AnswersQuires.ratingQuality.two.num, botQuires_1.AnswersQuires.ratingQuality.two.num),
+                Markup.button.callback(botQuires_1.AnswersQuires.ratingQuality.three.num, botQuires_1.AnswersQuires.ratingQuality.three.num),
+                Markup.button.callback(botQuires_1.AnswersQuires.ratingQuality.four.num, botQuires_1.AnswersQuires.ratingQuality.four.num),
+                Markup.button.callback(botQuires_1.AnswersQuires.ratingQuality.five.num, botQuires_1.AnswersQuires.ratingQuality.five.num)
             ],
+            [Markup.button.callback('cancel', 'cancel')]
         ]));
     }));
     // action for user interaction after choosing rating
     // if he choose 0
-    bot.action(botQuires_1.AnswersQuires.ratingQuality.zero.num, (fn) => __awaiter(this, void 0, void 0, function* () {
+    bot.action(botQuires_1.AnswersQuires.ratingQuality.zero.num, (fn, next) => __awaiter(this, void 0, void 0, function* () {
+        fn.session.ratedQuality = botQuires_1.AnswersQuires.ratingQuality.zero.num;
+        checkPhysicalStatus(fn);
+        return next();
     }));
+    bot.action(botQuires_1.AnswersQuires.ratingQuality.one.num, (fn, next) => __awaiter(this, void 0, void 0, function* () {
+        fn.session.ratedQuality = botQuires_1.AnswersQuires.ratingQuality.one.num;
+        checkPhysicalStatus(fn);
+        return next();
+    }));
+    bot.action(botQuires_1.AnswersQuires.ratingQuality.two.num, (fn, next) => __awaiter(this, void 0, void 0, function* () {
+        fn.session.ratedQuality = botQuires_1.AnswersQuires.ratingQuality.two.num;
+        checkPhysicalStatus(fn);
+        return next();
+    }));
+    bot.action(botQuires_1.AnswersQuires.ratingQuality.three.num, (fn, next) => __awaiter(this, void 0, void 0, function* () {
+        fn.session.ratedQuality = botQuires_1.AnswersQuires.ratingQuality.three.num;
+        checkPhysicalStatus(fn);
+        return next();
+    }));
+    bot.action(botQuires_1.AnswersQuires.ratingQuality.four.num, (fn, next) => __awaiter(this, void 0, void 0, function* () {
+        fn.session.ratedQuality = botQuires_1.AnswersQuires.ratingQuality.four.num;
+        checkPhysicalStatus(fn);
+        return next();
+    }));
+    bot.action(botQuires_1.AnswersQuires.ratingQuality.five.num, (fn, next) => __awaiter(this, void 0, void 0, function* () {
+        fn.session.ratedQuality = botQuires_1.AnswersQuires.ratingQuality.five.num;
+        checkPhysicalStatus(fn);
+        return next();
+    }));
+    bot.action('bad', (fn, next) => __awaiter(this, void 0, void 0, function* () {
+        fn.session.physicalQuality = `bad`;
+        // next
+        next();
+    }));
+    bot.action('good', (fn, next) => __awaiter(this, void 0, void 0, function* () {
+        fn.session.physicalQuality = `good`;
+        // next
+        return next();
+    }));
+    bot.command('/stat', (fn) => {
+        fn.replyWithHTML(`database has ${fn.session.ratedQuality}`);
+    });
+    bot.action(`cancel`, (_) => {
+        quitBot();
+    });
     // quit bot will be triggered when user type /quit
     quitBot();
     bot.launch();
@@ -85,8 +116,6 @@ function quitBot() {
         fn.leaveChat();
     });
 }
-// // session saved after user response
-// bot.on(`text`, (fn: any) => {
-//     fn.session.ratedQUality = fn.session.ratedQUality || 0;
-//
-// });
+function checkPhysicalStatus(fn) {
+    fn.replyWithHTML(`<b>How was the physical status of the product? </b>`, Markup.inlineKeyboard([Markup.button.callback(`Good`, `good`), Markup.button.callback(`Bad`, 'bad')]));
+}

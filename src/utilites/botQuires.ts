@@ -13,19 +13,21 @@ export const BotQuires = {
 }
 export const AnswersQuires = {
     ratingQuality: {
-        zero: {num: '0', id: '0s'}
+        zero: {num: '0', id: '0s'},
+        one: {num: '1', id: '1s'},
+        two: {num: '2', id: '2s'},
+        three: {num: '3', id: '3s'},
+        four: {num: '4', id: '4s'},
+        five: {num: '5', id: '5s'},
+
     }
 }
 export const BotCommands = {
-    rateShipment: {
-        name: 'rate Shipment'
-    },
-    ratePhysical: {
-        name: 'rate Physical'
-    },
-    doHealthCheck: {
-        name: "want to do new check?"
-    },
+    rateShipment: {name: 'How was the quality of tracking the shipment'},
+    ratePhysical: {name: 'rate Physical'},
+    doHealthCheck: {name: "want to do new check?"},
+    deliveryLocation: {name: 'please provide the delivery location'},
+    physicalStatus: {name: 'How was the physical status'},
     quit: {name: '/quit'},
     help: {name: '/help'},
 
