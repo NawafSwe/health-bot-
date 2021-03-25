@@ -51,9 +51,10 @@ function initialStart() {
         // starting with welcoming message
         bot.start((fn) => __awaiter(this, void 0, void 0, function* () {
             yield fn.replyWithHTML(`${botQuires_1.BotQuires.welcomingUser.query}`);
-            yield fn.replyWithHTML(botQuires_1.BotQuires.instructions);
-            yield fn.replyWithHTML(`<b> to quit bot write /out</b>`);
+            yield fn.replyWithHTML(`<b>Available Commands press /commands</b>`);
         }));
+        // shows available commands
+        bot.command(botQuires_1.BotCommands.commands.name, (fn) => __awaiter(this, void 0, void 0, function* () { return yield fn.replyWithHTML(botQuires_1.BotQuires.availableCommands); }));
         // init help command that contains sub actions
         bot.command('help', (fn) => __awaiter(this, void 0, void 0, function* () {
             yield fn.replyWithHTML('<b>available commands</b>', Markup.inlineKeyboard([
@@ -69,6 +70,8 @@ function initialStart() {
             yield quitBot(fn);
         }));
         // view session commands
+        bot.command(botQuires_1.BotCommands.viewSession.name, (fn) => __awaiter(this, void 0, void 0, function* () { return yield getDataFromSession(fn); }));
+        bot.command(botQuires_1.BotCommands.clearSession.name, (fn) => __awaiter(this, void 0, void 0, function* () { return yield clearSession(fn); }));
         // triggered after help
         // session actions
         // getting session data
@@ -302,5 +305,10 @@ function optionalLocation(fn) {
             Markup.button.callback(`Okay`, 'uploadLocation'),
             Markup.button.callback(`Skip`, `skipLocation`),
         ]));
+    });
+}
+function optionalPrice(fn) {
+    return __awaiter(this, void 0, void 0, function* () {
+        yield fn.replyWithHTML(`<b>What is the price of the product ?</b> type the price and press Continue to proceed next`, Markup.inlineKeyboard([]));
     });
 }

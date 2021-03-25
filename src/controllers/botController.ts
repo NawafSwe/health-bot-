@@ -36,14 +36,11 @@ export async function initialStart() {
     // starting with welcoming message
     bot.start(async (fn: Context) => {
             await fn.replyWithHTML(`${BotQuires.welcomingUser.query}`);
-            await fn.replyWithHTML(BotQuires.instructions);
-            await fn.replyWithHTML(`<b> to quit bot write /out</b>`);
             await fn.replyWithHTML(`<b>Available Commands press /commands</b>`);
         }
     );
     // shows available commands
-    bot.command(BotCommands.commands.name, async (fn: Context) => await fn.replyWithHTML(`<b></b>`));
-
+    bot.command(BotCommands.commands.name, async (fn: Context) => await fn.replyWithHTML(BotQuires.availableCommands));
     // init help command that contains sub actions
     bot.command('help', async (fn: Context) => {
         await fn.replyWithHTML('<b>available commands</b>', Markup.inlineKeyboard(
@@ -295,4 +292,9 @@ async function optionalLocation(fn: Context) {
         Markup.button.callback(`Okay`, 'uploadLocation'),
         Markup.button.callback(`Skip`, `skipLocation`),
     ]));
+}
+
+
+async function optionalPrice(fn: Context) {
+    await fn.replyWithHTML(`<b>What is the price of the product ?</b> type the price and press Continue to proceed next`, Markup.inlineKeyboard([]));
 }
