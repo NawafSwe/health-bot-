@@ -13,8 +13,7 @@ const {Telegraf, Markup, Extra, TelegrafContext} = require('telegraf');
 import {NextFunction} from "express";
 import TelegrafQuestion from "telegraf-question";
 import {Context} from "telegraf/typings/context";
-import {SessionContext} from "telegraf/typings/session";
-import {AnswersQuires, BotCommands, BotQuires} from "../utilites/botQuires";
+import {AnswersQuires, BotCommands, BotQuires, BotActions} from "../utilites/botQuires";
 import LocalSession = require('telegraf-session-local');
 
 // creating bot
@@ -39,8 +38,11 @@ export async function initialStart() {
             await fn.replyWithHTML(`${BotQuires.welcomingUser.query}`);
             await fn.replyWithHTML(BotQuires.instructions);
             await fn.replyWithHTML(`<b> to quit bot write /out</b>`);
+            await fn.replyWithHTML(`<b>Available Commands press /commands</b>`);
         }
     );
+    // shows available commands
+    bot.command(BotCommands.commands.name, async (fn: Context) => await fn.replyWithHTML(`<b></b>`));
 
     // init help command that contains sub actions
     bot.command('help', async (fn: Context) => {
@@ -60,8 +62,11 @@ export async function initialStart() {
     bot.command('out', async (fn: Context) => {
         await quitBot(fn);
     });
-    // view session commands
 
+
+    // view session commands
+    bot.command(BotCommands.viewSession.name, async (fn: Context) => await getDataFromSession(fn));
+    bot.command(BotCommands.clearSession.name, async (fn: Context) => await clearSession(fn));
 
     // triggered after help
     // session actions
@@ -262,7 +267,7 @@ async function clearSession(fn: any) {
 }
 
 async function indicateFinish(fn: any) {
-    await fn.replyWithHTML(`<b>Great We Finished thank you for your feedback you can view the last operation you did by typing view session</b>`)
+    await fn.replyWithHTML(`<b>Great We Finished thank you for your feedback you can view the last operation you did by typing view session</b>`);
 
 }
 
