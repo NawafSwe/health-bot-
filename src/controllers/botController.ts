@@ -118,9 +118,6 @@ export async function initialStart() {
         await optionalPrice(fn);
     });
 
-    bot.action(`skipPhoto`, async (fn: any) => {
-        await optionalPrice(fn);
-    });
 
     // after uploading photo ask for price
     bot.action(`continueWithPrice`, async (fn: any) => await askForLocation(fn));
@@ -141,9 +138,7 @@ export async function initialStart() {
     bot.action('uploadLocation', async (fn: Context) => {
         await indicateFinish(fn);
     });
-    bot.action('skipLocation', async (fn: Context) => {
-        await indicateFinish(fn);
-    });
+
 
     // if user want to cancel and quit
     bot.action(`cancel`, async (fn: any) => {
@@ -161,6 +156,7 @@ export async function initialStart() {
         }
 
         if (typeof fn.message.text === 'number') {
+            console.log(`price`);
             fn.session.price = parseFloat(fn.message.text.trim());
         }
 
@@ -223,7 +219,7 @@ async function askForLocation(fn: Context) {
  * @description getting stored data from session and send it to user
  */
 async function getDataFromSession(fn: any) {
-    if (fn.session.length > 0) {
+    if (fn.session) {
         let price = fn.session.price == null ? `Empty` : fn.session.price;
         let location = fn.session.location == null ? `Empty` : fn.session.location;
         let physicalQuality = fn.session.physicalQuality == null ? `Empty` : fn.session.physicalQuality;
@@ -304,9 +300,8 @@ async function initChoices() {
  * @description asks the user if he/she prefers to upload a photo of the product
  */
 async function optionalPhoto(fn: Context) {
-    await fn.replyWithHTML(`<b>Would like to provide a picture? if yes please send it and press okay if you would like to skip just press skip</b>`, Markup.inlineKeyboard([
+    await fn.replyWithHTML(`<b>Would like to provide a picture? if yes please send it and press okay if you would like to skip just press okay</b>`, Markup.inlineKeyboard([
         Markup.button.callback(`Okay`, 'uploadPhoto'),
-        Markup.button.callback(`Skip`, `skipPhoto`),
 
     ]));
 }
@@ -322,7 +317,6 @@ async function optionalPhoto(fn: Context) {
 async function optionalLocation(fn: Context) {
     await fn.replyWithHTML(`<b>can you provide the location? you can skip or send location and click Okay to proceed</b>`, Markup.inlineKeyboard([
         Markup.button.callback(`Okay`, 'uploadLocation'),
-        Markup.button.callback(`Skip`, `skipLocation`),
     ]));
 }
 
